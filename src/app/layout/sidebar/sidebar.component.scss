@@ -82,6 +82,11 @@
   }
 }
 
+.sidebar .nav a.selected {
+  background-color: #c68905; /* o cualquier color que prefieras */
+  color: white;
+}
+
 .menu-toggle {
   position: fixed;
   top: 1rem;

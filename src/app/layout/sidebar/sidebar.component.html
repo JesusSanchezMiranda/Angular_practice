@@ -1,0 +1,77 @@
+<!-- Botón para pantallas pequeñas -->
+<button class="menu-toggle" (click)="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar" [class.open]="isOpen">
+  <div class="logo">El Sabroson</div>
+
+  <nav class="nav">
+    <a href="/dashboard"
+       routerLinkActive="active"
+       [class.selected]="active === 'Dashboard'"
+       (click)="setActive('Dashboard')">
+      <i class="fas fa-tachometer-alt"></i> Dashboard
+    </a>
+
+    <a href="/kitchen"
+       routerLinkActive="active"
+       [class.selected]="active === 'Cocina'"
+       (click)="setActive('Cocina')">
+      <i class="fas fa-utensils"></i> Cocina
+    </a>
+
+    <a href="/products"
+       routerLinkActive="active"
+       [class.selected]="active === 'Productos'"
+       (click)="setActive('Productos')">
+      <i class="fas fa-box-open"></i> Productos
+    </a>
+
+    <a href="/sale"
+       routerLinkActive="active"
+       [class.selected]="active === 'Ventas'"
+       (click)="setActive('Ventas')">
+      <i class="fas fa-shopping-cart"></i> Ventas
+    </a>
+
+    <a href="/box"
+       routerLinkActive="active"
+       [class.selected]="active === 'Cajero'"
+       (click)="setActive('Cajero')">
+      <i class="fas fa-cash-register"></i> Cajero
+    </a>
+
+    <a href="/reservations"
+       routerLinkActive="active"
+       [class.selected]="active === 'Reservas'"
+       (click)="setActive('Reservas')">
+      <i class="fas fa-calendar-alt"></i> Reservas
+    </a>
+
+    <a href="/users"
+       routerLinkActive="active"
+       [class.selected]="active === 'Usuarios'"
+       (click)="setActive('Usuarios')">
+      <i class="fas fa-users"></i> Usuarios
+    </a>
+
+    <a href="/reports"
+       routerLinkActive="active"
+       [class.selected]="active === 'Reportes'"
+       (click)="setActive('Reportes')">
+      <i class="fas fa-chart-bar"></i> Reportes
+    </a>
+  </nav>
+
+  <div class="footer">
+    <div class="user-info">
+      <div class="circle">A</div>
+      <div>
+        <strong>Administrador</strong>
+        <div class="role">Administrador</div>
+      </div>
+    </div>
+  </div>
+</div>
