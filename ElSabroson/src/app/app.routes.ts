@@ -1,53 +1,53 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './feature/dashboard/dashboard.component';
-import { KitchenComponent } from './feature/kitchen/kitchen.component';
-import { ProductsComponent } from './feature/products/products.component';
-import { SaleComponent } from './feature/sale/sale.component';
-import { BoxComponent } from './feature/box/box.component';
-import { ReservationsComponent } from './feature/reservations/reservations.component';
-import { UsersComponent } from './feature/users/users.component';
-import { ReportsComponent } from './feature/reports/reports.component';
+import { UsersListComponent } from './feature/users/users-list/users-list.component';
+import { ProductsListComponent } from './feature/products/products-list/products-list.component';
+import { SaleListComponent } from './feature/sale/sale-list/sale-list.component';
+import { DashboardListComponent } from './feature/dashboard/dashboard-list/dashboard-list.component';
+import { KitchenListComponent } from './feature/kitchen/kitchen-list/kitchen-list.component';
+import { BoxListComponent } from './feature/box/box-list/box-list.component';
+import { ReservationsListComponent } from './feature/reservations/reservations-list/reservations-list.component';
+import { ReportsListComponent } from './feature/reports/reports-list/reports-list.component';
 
 export const routes: Routes = [
 
     { 
         path: "dashboard",
-        component: DashboardComponent
+        component: DashboardListComponent
     },
 
     {
         path: "kitchen",
-        component: KitchenComponent
+        component: KitchenListComponent
     },
 
     {
         path: "products",
-        component: ProductsComponent
+        component: ProductsListComponent
     },
 
     {
         path: "sale",
-        component: SaleComponent
+        component: SaleListComponent
     },
 
     {
         path: "box",
-        component: BoxComponent
+        component: BoxListComponent
     },
 
     {
         path: "reservations",
-        component: ReservationsComponent
+        component: ReservationsListComponent
     },
 
     {
         path: "users",
-        component: UsersComponent
+        component: UsersListComponent 
     },
 
     {
         path: "reports",
-        component: ReportsComponent
+        component: ReportsListComponent
     },
 
     {
