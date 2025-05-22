@@ -131,6 +131,7 @@
   
   .icon-btn.editar { color: #333; }
   .icon-btn.eliminar { color: #d32f2f; }
+  .icon-btn.restaurar {color:#1a6fe6; }
 
   .icon-btn.editar:hover{
     background-color: #e8c354;
@@ -138,5 +139,9 @@
 
   .icon-btn.eliminar:hover{
     background-color: #f0b5b5;
+  }
+
+  .icon-btn.restaurar:hover{
+    background-color: #3880cd36;
   }
   

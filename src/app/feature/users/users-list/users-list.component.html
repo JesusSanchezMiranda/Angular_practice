@@ -9,10 +9,7 @@
       <h2>Gestión de Usuarios</h2>
       <p>Administra los usuarios del sistema</p>
       <div class="toolbar">
-        <input
-          type="text"
-          placeholder="Buscar por nombre, documento o email..."
-          [(ngModel)]="searchTerm"
+        <input type="text" placeholder="Buscar por nombre, documento o email..." [(ngModel)]="searchTerm"
           (input)="filterUsers()" />
 
         <select [(ngModel)]="selectedRole" (change)="filterUsers()">
@@ -64,9 +61,12 @@
             <button class="icon-btn editar" title="Editar" (click)="editUser(user)">
               <i class="fas fa-pen"></i>
             </button>
-            <button class="icon-btn eliminar" title="Eliminar" (click)="deleteUser(user.users_id)">
+            <button class="icon-btn eliminar" title="Eliminar" (click)="deleteUser(user.users_id!)">
               <i class="fas fa-trash"></i>
             </button>
+            <button class="icon-btn restaurar" title="restaurar" (click)="restoreUser(user.users_id!)"> <i class="fa-regular fa-square-check"></i></button>
+
+
           </td>
         </tr>
       </tbody>
@@ -74,7 +74,11 @@
   </div>
 
   <app-users-form
-    [visible]="showUserForm"
-    (cancel)="closeUserForm()">
-  </app-users-form>
+  [visible]="showUserForm"
+  [user]="selectedUser"
+  (cancel)="closeUserForm()"
+  (create)="createUser($event)"
+  (update)="updateUser($event)">
+</app-users-form>
+
 </div>

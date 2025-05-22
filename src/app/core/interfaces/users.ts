@@ -1,5 +1,5 @@
 export interface Users {
-     users_id: number;
+     users_id?: number;
      document_type: string;
      document_number: string;
      name: string;

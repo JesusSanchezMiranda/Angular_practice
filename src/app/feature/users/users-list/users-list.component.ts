@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UsersService } from '../../../core/services/users.service';
 import { Users } from '../../../core/interfaces/users';
+import { AlertService } from '../../../shared/services/alert.service';
 
 @Component({
   selector: 'app-users-list',
@@ -13,6 +14,8 @@ import { Users } from '../../../core/interfaces/users';
   styleUrls: ['./users-list.component.scss']
 })
 export class UsersListComponent implements OnInit {
+  
+  constructor(private alertService: AlertService) {}
   arrova = "@";
 
   users: Users[] = [];
@@ -49,11 +52,17 @@ export class UsersListComponent implements OnInit {
   }
 
   createUser(user: Users) {
-    this.userService.save(user).subscribe(() => {
+  this.userService.save(user).subscribe({
+    next: () => {
       this.loadUsers();
       this.closeUserForm();
-    });
-  }
+    },
+    error: (err) => {
+      console.error('Error creando usuario:', err);
+    }
+  });
+}
+
 
   updateUser(user: Users) {
     this.userService.update(user).subscribe(() => {
@@ -67,13 +76,31 @@ export class UsersListComponent implements OnInit {
   }
 
   deleteUser(users_id: number) {
-    if (confirm('¿Estás seguro de eliminar este usuario?')) {
+  this.alertService.confirmDelete().then((result) => {
+    if (result.isConfirmed) {
       this.userService.delete(users_id).subscribe(() => {
         this.loadUsers();
+        this.alertService.success('Usuario eliminado correctamente');
+      }, () => {
+        this.alertService.error('Ocurrió un error al eliminar');
       });
     }
-  }
+  });
+}
 
+  restoreUser(users_id: number) {
+    this.alertService.confirmRestore().then((result)=>{   
+      if (result.isConfirmed){
+        this.userService.restore(users_id).subscribe(() => {
+        this.loadUsers();
+        this.alertService.success('Usuario resturado correctamente');
+      }, ()  => {
+        this.alertService.error('Ocurrio un error al restaurar')
+      });
+    }
+  });
+}
+        
   filterUsers() {
     const term = this.searchTerm.toLowerCase();
 
@@ -95,4 +122,6 @@ export class UsersListComponent implements OnInit {
       return matchesTerm && matchesRole && matchesState;
     });
   }
+ 
+
 }

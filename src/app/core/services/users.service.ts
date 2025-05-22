@@ -33,8 +33,8 @@ export class UsersService {
   }
 
   update(user: Users): Observable<Users> {
-    return this.http.put<Users>(`${this.urlBackEnd}/update`, user);
-  }
+  return this.http.put<Users>(`${this.urlBackEnd}/update/${user.users_id}`, user);
+}
 
   delete(usersId: number): Observable<void> {
     return this.http.delete<void>(`${this.urlBackEnd}/delete/${usersId}`);

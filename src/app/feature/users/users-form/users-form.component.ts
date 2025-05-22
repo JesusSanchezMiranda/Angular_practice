@@ -1,40 +1,57 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Users } from '../../../core/interfaces/users';
 
 @Component({
   selector: 'app-users-form',
+  standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './users-form.component.html',
   styleUrl: './users-form.component.scss'
 })
-export class UsersFormComponent {
- // Controla si el modal está visible
+export class UsersFormComponent implements OnChanges {
   @Input() visible: boolean = false;
+  @Input() user: Users | null = null;
 
-  // Emite cuando el usuario cancela
   @Output() cancel = new EventEmitter<void>();
+  @Output() create = new EventEmitter<Users>();
+  @Output() update = new EventEmitter<Users>();
 
-  // Emite cuando se envían los datos
-  @Output() create = new EventEmitter<any>();
+  formUser: Users = this.getEmptyUser();
 
-  // Aquí puedes simular un modelo de usuario si luego quieres conectar con un formulario reactivo
-  user = {
-    nombre: '',
-    apellido: '',
-    tipoDocumento: 'DNI',
-    numeroDocumento: '',
-    telefono: '',
-    email: '',
-    rol: 'Mesero',
-    estado: 'Activo'
-  };
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['user']) {
+      this.formUser = this.user ? { ...this.user } : this.getEmptyUser();
+    }
+  }
 
   onCancel() {
     this.cancel.emit();
   }
 
-  onCreate() {
-    this.create.emit(this.user);
+  onSubmit() {
+  if (this.user) {
+    this.update.emit(this.formUser);
+  } else {
+    const newUser = { ...this.formUser };
+    delete newUser.users_id;
+    this.create.emit(newUser);
+  }
+}
+
+
+  private getEmptyUser(): Users {
+    return {
+      name: '',
+      last_name: '',
+      document_type: '',
+      document_number: '',
+      cellphone: '',
+      email: '',
+      role: '',
+      state: '',
+      registration_date: ''
+    } as Users; 
   }
 }
