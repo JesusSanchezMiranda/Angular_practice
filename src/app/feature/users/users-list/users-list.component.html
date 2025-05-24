@@ -14,9 +14,11 @@
 
         <select [(ngModel)]="selectedRole" (change)="filterUsers()">
           <option value="">Todos los roles</option>
-          <option value="Administrador">(A) Administrador</option>
-          <option value="Empleados">(E) Empleados</option>
-          <option value="Clientes">(C) Clientes</option>
+          <option value="Admin">Admin</option>
+          <option value="Cocinero">Cocinero</option>
+          <option value="Mesero">Mesero</option>
+          <option value="Cajero">Cajero</option>
+          <option value="Cliente">Cliente</option>
         </select>
 
         <select [(ngModel)]="selectedState" (change)="filterUsers()">

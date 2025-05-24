@@ -101,10 +101,30 @@ td {
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.9em;
+  color: white;
   font-weight: bold;
   display: inline-block;
 }
 
+.badge.admin {
+  background-color: #1a6fe6;
+}
+
+.badge.cocinero {
+  background-color: #f5aa41;
+}
+
+.badge.mesero {
+  background-color: #e72121;
+}
+
+.badge.cajero {
+  background-color: #15919f;
+}
+
+.badge.cliente {
+  background-color: #1d5d17;
+}
 
 .acciones .icon-btn {
   background: none;

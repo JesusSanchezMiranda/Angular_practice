@@ -31,15 +31,19 @@ export class UsersFormComponent implements OnChanges {
   }
 
   onSubmit() {
-  if (this.user) {
-    this.update.emit(this.formUser);
-  } else {
-    const newUser = { ...this.formUser };
-    delete newUser.users_id;
-    this.create.emit(newUser);
+    if (this.user) {
+      this.update.emit(this.formUser);
+    } else {
+      const newUser = { ...this.formUser };
+      delete newUser.users_id;
+      this.create.emit(newUser);
+      this.resetForm(); // opcional limpiar aquí mismo si quieres
+    }
   }
-}
 
+  resetForm() {
+    this.formUser = this.getEmptyUser();
+  }
 
   private getEmptyUser(): Users {
     return {
@@ -50,8 +54,8 @@ export class UsersFormComponent implements OnChanges {
       cellphone: '',
       email: '',
       role: '',
-      state: '',
+      state: 'A',
       registration_date: ''
-    } as Users; 
+    } as Users;
   }
 }

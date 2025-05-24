@@ -101,27 +101,28 @@ export class UsersListComponent implements OnInit {
   });
 }
         
-  filterUsers() {
-    const term = this.searchTerm.toLowerCase();
+ filterUsers() {
+  const term = this.searchTerm.toLowerCase();
 
-    this.filteredUsers = this.users.filter(user => {
-      const matchesTerm =
-        user.name.toLowerCase().includes(term) ||
-        user.last_name.toLowerCase().includes(term) ||
-        user.document_number.toLowerCase().includes(term) ||
-        user.email.toLowerCase().includes(term);
+  this.filteredUsers = this.users.filter(user => {
+    const matchesTerm =
+      user.name.toLowerCase().includes(term) ||
+      user.last_name.toLowerCase().includes(term) ||
+      user.document_number.toLowerCase().includes(term) ||
+      user.email.toLowerCase().includes(term);
 
-      const matchesRole = this.selectedRole
-        ? user.role.toUpperCase() === this.selectedRole.charAt(0).toUpperCase()
-        : true;
+    const matchesRole = this.selectedRole
+      ? user.role.toLowerCase() === this.selectedRole.toLowerCase()
+      : true;
 
-      const matchesState = this.selectedState
-        ? user.state?.toUpperCase() === this.selectedState.charAt(0).toUpperCase()
-        : true;
+    const matchesState = this.selectedState
+      ? user.state?.toLowerCase() === this.selectedState.toLowerCase()
+      : true;
 
-      return matchesTerm && matchesRole && matchesState;
-    });
-  }
+    return matchesTerm && matchesRole && matchesState;
+  });
+}
+
  
 
 }
