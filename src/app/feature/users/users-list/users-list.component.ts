@@ -52,24 +52,45 @@ export class UsersListComponent implements OnInit {
   }
 
   createUser(user: Users) {
-  this.userService.save(user).subscribe({
-    next: () => {
-      this.loadUsers();
-      this.closeUserForm();
-    },
-    error: (err) => {
-      console.error('Error creando usuario:', err);
+  this.alertService.confirmCreate().then(result => {
+    if (result.isConfirmed) {
+      this.userService.save(user).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.closeUserForm();
+          this.alertService.success('Usuario creado exitosamente');
+        },
+        error: (err) => {
+          console.error('Error creando usuario:', err);
+          this.alertService.error('Ocurrió un error al crear el usuario');
+        }
+      });
     }
   });
 }
 
 
+
+
   updateUser(user: Users) {
-    this.userService.update(user).subscribe(() => {
-      this.loadUsers();
-      this.closeUserForm();
-    });
-  }
+  this.alertService.confirmUpdate().then(result => {
+    if (result.isConfirmed) {
+      this.userService.update(user).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.closeUserForm();
+          this.alertService.success('Usuario actualizado exitosamente');
+        },
+        error: (err) => {
+          console.error('Error actualizando usuario:', err);
+          this.alertService.error('Ocurrió un error al actualizar el usuario');
+        }
+      });
+    }
+  });
+}
+
+
 
   editUser(user: Users) {
     this.openUserForm(user);

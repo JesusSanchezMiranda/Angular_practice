@@ -33,6 +33,34 @@ export class AlertService {
     });
   }
 
+  confirmCreate(message: string = '¿Deseas crear este usuario?') {
+  return Swal.fire({
+    title: 'Crear usuario',
+    text: message,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, crear',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#28a745',
+    cancelButtonColor: '#6c757d'
+  });
+}
+
+
+confirmUpdate(message: string = '¿Deseas actualizar este usuario?') {
+  return Swal.fire({
+    title: 'Actualizar usuario',
+    text: message,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, actualizar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#007bff',
+    cancelButtonColor: '#6c757d'
+  });
+}
+
+
   confirmDelete(message: string = '¿Estás seguro de eliminar este registro?') {
     return Swal.fire({
       title: 'Confirmación',
