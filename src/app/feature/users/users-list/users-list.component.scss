@@ -76,8 +76,22 @@ th,
 td {
   padding: 20px 12px;
   border-bottom: 1px solid #eee;
-  text-align: center;
+  text-align: left;
   vertical-align: top;
+}
+
+.values_data{
+  background-color: white;
+  text-align: left;
+  transition: all 300ms ease;
+}
+
+.values_data:hover{
+  background-color: #d6d7d77d;
+}
+
+.acciones{
+  text-align: center;
 }
 
 .estado.a {
@@ -163,6 +177,12 @@ td {
 
 .fa-regular.fa-envelope{
   margin-right: 5px;
-  color: #81583adb;
-  font-size: 16px;
+  color: #aba39ef4;
+  font-size: 12px;
+}
+
+.fa-solid.fa-phone{
+  margin-right: 5px;
+  color: #aba39ef4;
+  font-size: 11px;
 }

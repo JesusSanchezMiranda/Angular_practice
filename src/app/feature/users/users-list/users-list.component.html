@@ -23,8 +23,8 @@
 
         <select [(ngModel)]="selectedState" (change)="filterUsers()">
           <option value="">Todos los estados</option>
-          <option value="Activo">(A) Activos</option>
-          <option value="Inactivo">(I) Inactivos</option>
+          <option value="A">(A) Activos</option>
+          <option value="I">(I) Inactivos</option>
         </select>
       </div>
     </div>
@@ -39,15 +39,15 @@
           <th>Rol</th>
           <th>Registro</th>
           <th>Estado</th>
-          <th>Acciones</th>
+          <th class="acciones">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of filteredUsers">
+        <tr class="values_data" *ngFor="let user of filteredUsers">
           <td>{{ user.name }} {{ user.last_name }}</td>
           <td>{{ user.document_type }}: <br> {{ user.document_number }}</td>
           <td><i class="fa-regular fa-envelope"></i>{{ user.email }}</td>
-          <td>{{ user.cellphone }}</td>
+          <td><i class="fa-solid fa-phone"></i>{{ user.cellphone }}</td>
           <td>
             <span class="badge" [ngClass]="user.role.toLowerCase()">
               {{ user.role }}

@@ -1,10 +1,11 @@
+import Swal from 'sweetalert2';
 import { Component, OnInit, inject } from '@angular/core';
 import { UsersFormComponent } from '../users-form/users-form.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UsersService } from '../../../core/services/users.service';
 import { Users } from '../../../core/interfaces/users';
-import { AlertService } from '../../../shared/services/alert.service';
+
 
 @Component({
   selector: 'app-users-list',
@@ -14,9 +15,9 @@ import { AlertService } from '../../../shared/services/alert.service';
   styleUrls: ['./users-list.component.scss']
 })
 export class UsersListComponent implements OnInit {
-  
-  constructor(private alertService: AlertService) {}
-  arrova = "@";
+
+
+
 
   users: Users[] = [];
   filteredUsers: Users[] = [];
@@ -52,43 +53,77 @@ export class UsersListComponent implements OnInit {
   }
 
   createUser(user: Users) {
-  this.alertService.confirmCreate().then(result => {
-    if (result.isConfirmed) {
-      this.userService.save(user).subscribe({
-        next: () => {
-          this.loadUsers();
-          this.closeUserForm();
-          this.alertService.success('Usuario creado exitosamente');
-        },
-        error: (err) => {
-          console.error('Error creando usuario:', err);
-          this.alertService.error('Ocurrió un error al crear el usuario');
-        }
-      });
-    }
-  });
-}
-
-
-
+    Swal.fire({
+      title: 'Crear usuario',
+      text: '¿Deseas crear este usuario?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, crear',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#28a745',
+      cancelButtonColor: '#6c757d'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.userService.save(user).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.closeUserForm();
+            Swal.fire({
+              icon: 'success',
+              title: 'Éxito',
+              text: 'Usuario creado exitosamente',
+              confirmButtonColor: '#28a745'
+            });
+          },
+          error: () => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Ocurrió un error al crear el usuario',
+              confirmButtonColor: '#dc3545'
+            });
+          }
+        });
+      }
+    });
+  }
 
   updateUser(user: Users) {
-  this.alertService.confirmUpdate().then(result => {
-    if (result.isConfirmed) {
-      this.userService.update(user).subscribe({
-        next: () => {
-          this.loadUsers();
-          this.closeUserForm();
-          this.alertService.success('Usuario actualizado exitosamente');
-        },
-        error: (err) => {
-          console.error('Error actualizando usuario:', err);
-          this.alertService.error('Ocurrió un error al actualizar el usuario');
-        }
-      });
-    }
-  });
-}
+    Swal.fire({
+      title: 'Actualizar usuario',
+      text: '¿Deseas actualizar este usuario?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, actualizar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#007bff',
+      cancelButtonColor: '#6c757d'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.userService.update(user).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.closeUserForm();
+            Swal.fire({
+              icon: 'success',
+              title: 'Éxito',
+              text: 'Usuario actualizado exitosamente',
+              confirmButtonColor: '#28a745'
+            });
+          },
+          error: () => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Ocurrió un error al actualizar el usuario',
+              confirmButtonColor: '#dc3545'
+            });
+          }
+        });
+      }
+    });
+  }
+
 
 
 
@@ -97,53 +132,94 @@ export class UsersListComponent implements OnInit {
   }
 
   deleteUser(users_id: number) {
-  this.alertService.confirmDelete().then((result) => {
-    if (result.isConfirmed) {
-      this.userService.delete(users_id).subscribe(() => {
-        this.loadUsers();
-        this.alertService.success('Usuario eliminado correctamente');
-      }, () => {
-        this.alertService.error('Ocurrió un error al eliminar');
-      });
-    }
-  });
-}
+    Swal.fire({
+      title: 'Confirmación',
+      text: '¿Estás seguro de eliminar este registro?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.userService.delete(users_id).subscribe(() => {
+          this.loadUsers();
+          Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Usuario eliminado correctamente',
+            confirmButtonColor: '#28a745'
+          });
+        }, () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al eliminar',
+            confirmButtonColor: '#dc3545'
+          });
+        });
+      }
+    });
+  }
+
 
   restoreUser(users_id: number) {
-    this.alertService.confirmRestore().then((result)=>{   
-      if (result.isConfirmed){
+    Swal.fire({
+      title: 'Restaurar',
+      text: '¿Deseas restaurar este registro?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, restaurar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#28a745',
+      cancelButtonColor: '#6c757d'
+    }).then(result => {
+      if (result.isConfirmed) {
         this.userService.restore(users_id).subscribe(() => {
-        this.loadUsers();
-        this.alertService.success('Usuario resturado correctamente');
-      }, ()  => {
-        this.alertService.error('Ocurrio un error al restaurar')
-      });
-    }
-  });
-}
-        
- filterUsers() {
-  const term = this.searchTerm.toLowerCase();
+          this.loadUsers();
+          Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Usuario restaurado correctamente',
+            confirmButtonColor: '#28a745'
+          });
+        }, () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al restaurar',
+            confirmButtonColor: '#dc3545'
+          });
+        });
+      }
+    });
+  }
 
-  this.filteredUsers = this.users.filter(user => {
-    const matchesTerm =
-      user.name.toLowerCase().includes(term) ||
-      user.last_name.toLowerCase().includes(term) ||
-      user.document_number.toLowerCase().includes(term) ||
-      user.email.toLowerCase().includes(term);
 
-    const matchesRole = this.selectedRole
-      ? user.role.toLowerCase() === this.selectedRole.toLowerCase()
-      : true;
+  filterUsers() {
+    const term = this.searchTerm.toLowerCase();
 
-    const matchesState = this.selectedState
-      ? user.state?.toLowerCase() === this.selectedState.toLowerCase()
-      : true;
+    this.filteredUsers = this.users.filter(user => {
+      const matchesTerm =
+        user.name.toLowerCase().includes(term) ||
+        user.last_name.toLowerCase().includes(term) ||
+        user.document_number.toLowerCase().includes(term) ||
+        user.email.toLowerCase().includes(term);
 
-    return matchesTerm && matchesRole && matchesState;
-  });
-}
+      const matchesRole = this.selectedRole
+        ? user.role.toLowerCase() === this.selectedRole.toLowerCase()
+        : true;
 
- 
+      const matchesState = this.selectedState
+        ? user.state?.toLowerCase() === this.selectedState.toLowerCase()
+        : true;
+
+      return matchesTerm && matchesRole && matchesState;
+    });
+  }
+
+
+
 
 }
