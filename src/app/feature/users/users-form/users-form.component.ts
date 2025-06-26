@@ -2,7 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Users } from '../../../core/interfaces/users';
-import { AlertService } from '../../../shared/services/alert.service';
+
+// Interface para la imagen
+interface UserFormPayload {
+  user: Users;
+  file?: File;
+}
 
 @Component({
   selector: 'app-users-form',
@@ -11,15 +16,22 @@ import { AlertService } from '../../../shared/services/alert.service';
   templateUrl: './users-form.component.html',
   styleUrl: './users-form.component.scss'
 })
+
+
+
 export class UsersFormComponent implements OnChanges {
 
-  constructor(private alertService: AlertService) {}
+  selectedFile!: File;
+  previewUrl: string | null = null;
+
+
   @Input() visible: boolean = false;
   @Input() user: Users | null = null;
 
   @Output() cancel = new EventEmitter<void>();
-  @Output() create = new EventEmitter<Users>();
-  @Output() update = new EventEmitter<Users>();
+  @Output() create = new EventEmitter<UserFormPayload>();
+  @Output() update = new EventEmitter<UserFormPayload>();
+
 
   formUser: Users = this.getEmptyUser();
 
@@ -34,76 +46,80 @@ export class UsersFormComponent implements OnChanges {
   }
 
   onSubmit() {
-  const {
-    name,
-    last_name,
-    document_type,
-    document_number,
-    cellphone,
-    email,
-    role
-  } = this.formUser;
+    const {
+      name,
+      last_name,
+      document_type,
+      document_number,
+      cellphone,
+      email,
+      role
+    } = this.formUser;
 
-  const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 
-  if (!name || !nameRegex.test(name.trim())) {
-    this.alertService.error('El nombre es obligatorio y solo puede contener letras, espacios, tildes y "ñ".');
-    return;
+    if (!name || !nameRegex.test(name.trim())) {
+      window.alert('El nombre es obligatorio y solo puede contener letras, espacios, tildes y "ñ".');
+      return;
+    }
+
+    if (!last_name || !nameRegex.test(last_name.trim())) {
+      window.alert('El apellido es obligatorio y solo puede contener letras, espacios, tildes y "ñ".');
+      return;
+    }
+
+    if (!document_type) {
+      window.alert('Debe seleccionar un tipo de documento.');
+      return;
+    }
+
+    if (!document_number) {
+      window.alert('Debe ingresar el número de documento.');
+      return;
+    }
+
+    const docNum = document_number.trim();
+    if (document_type === 'DNI' && !/^\d{8}$/.test(docNum)) {
+      window.alert('El DNI debe tener exactamente 8 dígitos numéricos.');
+      return;
+    }
+
+    if (document_type === 'CNE' && !/^\d{20}$/.test(docNum)) {
+      window.alert('El CNE debe tener exactamente 20 dígitos numéricos.');
+      return;
+    }
+
+    if (!cellphone || !/^\d{9}$/.test(cellphone.trim())) {
+      window.alert('El teléfono debe tener exactamente 9 dígitos numéricos.');
+      return;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|yahoo\.com)$/;
+    if (!email || !emailRegex.test(email.trim())) {
+      window.alert('Debe ingresar un correo válido de gmail, hotmail, outlook o yahoo.');
+      return;
+    }
+
+    if (!role) {
+      window.alert('Debe seleccionar un rol.');
+      return;
+    }
+
+    // === Si estás editando un usuario ===
+    const payload: UserFormPayload = {
+      user: { ...this.formUser },
+      file: this.selectedFile
+    };
+
+    if (this.user) {
+      this.update.emit(payload); // usuario ya existe
+    } else {
+      delete payload.user.users_id; // asegurarse de no mandar ID si es nuevo
+      this.create.emit(payload);
+      this.resetForm();
+    }
+
   }
-
-  if (!last_name || !nameRegex.test(last_name.trim())) {
-    this.alertService.error('El apellido es obligatorio y solo puede contener letras, espacios, tildes y "ñ".');
-    return;
-  }
-
-  if (!document_type) {
-    this.alertService.error('Debe seleccionar un tipo de documento.');
-    return;
-  }
-
-  if (!document_number) {
-    this.alertService.error('Debe ingresar el número de documento.');
-    return;
-  }
-
-  const docNum = document_number.trim();
-  if (document_type === 'DNI' && !/^\d{8}$/.test(docNum)) {
-    this.alertService.error('El DNI debe tener exactamente 8 dígitos numéricos.');
-    return;
-  }
-
-  if (document_type === 'CNE' && !/^\d{20}$/.test(docNum)) {
-    this.alertService.error('El CNE debe tener exactamente 20 dígitos numéricos.');
-    return;
-  }
-
-  if (!cellphone || !/^\d{9}$/.test(cellphone.trim())) {
-    this.alertService.error('El teléfono debe tener exactamente 9 dígitos numéricos.');
-    return;
-  }
-
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|yahoo\.com)$/;
-  if (!email || !emailRegex.test(email.trim())) {
-    this.alertService.error('Debe ingresar un correo válido de gmail, hotmail, outlook o yahoo.');
-    return;
-  }
-
-  if (!role) {
-    this.alertService.error('Debe seleccionar un rol.');
-    return;
-  }
-
-  // Si pasa validaciones
-  if (this.user) {
-    this.update.emit(this.formUser);
-  } else {
-    const newUser = { ...this.formUser };
-    delete newUser.users_id;
-    this.create.emit(newUser);
-    this.resetForm();
-  }
-}
-
 
   resetForm() {
     this.formUser = this.getEmptyUser();
@@ -122,4 +138,21 @@ export class UsersFormComponent implements OnChanges {
       registration_date: ''
     } as Users;
   }
+
+  // Vista previa de las imagenes
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+
+      // Mostrar vista previa (opcional)
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
 }

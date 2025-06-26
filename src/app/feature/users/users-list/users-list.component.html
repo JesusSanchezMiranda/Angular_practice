@@ -32,6 +32,7 @@
     <table>
       <thead>
         <tr>
+          <th>Imagen</th>
           <th>Nombre</th>
           <th>Documento</th>
           <th>Correo</th>
@@ -43,7 +44,17 @@
         </tr>
       </thead>
       <tbody>
+
+        <!--Nueva Columna para la imagen -->
         <tr class="values_data" *ngFor="let user of filteredUsers">
+          <td>
+            <img 
+            [src]="getFullImageUrl(user.imagePath ?? '')" 
+            (error)="onImageError($event)"
+            alt="Foto de perfil" width="60" height="60" 
+            style="border-radius: 50%; object-fit: cover" />
+          </td>
+
           <td>{{ user.name }} {{ user.last_name }}</td>
           <td>{{ user.document_type }}: <br> {{ user.document_number }}</td>
           <td><i class="fa-regular fa-envelope"></i>{{ user.email }}</td>
@@ -66,7 +77,8 @@
             <button class="icon-btn eliminar" title="Eliminar" (click)="deleteUser(user.users_id!)">
               <i class="fas fa-trash"></i>
             </button>
-            <button class="icon-btn restaurar" title="restaurar" (click)="restoreUser(user.users_id!)"> <i class="fa-regular fa-square-check"></i></button>
+            <button class="icon-btn restaurar" title="restaurar" (click)="restoreUser(user.users_id!)"> <i
+                class="fa-regular fa-square-check"></i></button>
 
 
           </td>
@@ -75,12 +87,8 @@
     </table>
   </div>
 
-  <app-users-form
-  [visible]="showUserForm"
-  [user]="selectedUser"
-  (cancel)="closeUserForm()"
-  (create)="createUser($event)"
-  (update)="updateUser($event)">
-</app-users-form>
+  <app-users-form [visible]="showUserForm" [user]="selectedUser" (cancel)="closeUserForm()"
+    (create)="createUser($event)" (update)="updateUser($event)">
+  </app-users-form>
 
 </div>

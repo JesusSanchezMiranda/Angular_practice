@@ -1,10 +1,16 @@
 import Swal from 'sweetalert2';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { UsersFormComponent } from '../users-form/users-form.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UsersService } from '../../../core/services/users.service';
 import { Users } from '../../../core/interfaces/users';
+import { environment } from '../../../../environments/environment';
+
+interface UserFormPayload {
+  user: Users;
+  file?: File;
+}
 
 
 @Component({
@@ -15,6 +21,16 @@ import { Users } from '../../../core/interfaces/users';
   styleUrls: ['./users-list.component.scss']
 })
 export class UsersListComponent implements OnInit {
+
+  @ViewChild(UsersFormComponent) userFormComponent!: UsersFormComponent;
+
+  imageExistsMap: { [key: number]: boolean } = {};
+
+  onImageError(event: Event) {
+  const target = event.target as HTMLImageElement;
+  target.style.display = 'none'; // Oculta la imagen rota
+}
+
 
 
 
@@ -36,11 +52,12 @@ export class UsersListComponent implements OnInit {
   }
 
   loadUsers() {
-    this.userService.findAll().subscribe(users => {
-      this.users = users;
-      this.filteredUsers = [...this.users];
-    });
-  }
+  this.userService.findAll().subscribe(users => {
+    this.users = users;
+    this.filteredUsers = users;
+  });
+}
+
 
   openUserForm(user?: Users) {
     this.selectedUser = user ? { ...user } : null;
@@ -52,7 +69,9 @@ export class UsersListComponent implements OnInit {
     this.selectedUser = null;
   }
 
-  createUser(user: Users) {
+  createUser(payload: UserFormPayload) {
+    const { user, file } = payload;
+
     Swal.fire({
       title: 'Crear usuario',
       text: '¿Deseas crear este usuario?',
@@ -65,30 +84,60 @@ export class UsersListComponent implements OnInit {
     }).then(result => {
       if (result.isConfirmed) {
         this.userService.save(user).subscribe({
-          next: () => {
-            this.loadUsers();
-            this.closeUserForm();
-            Swal.fire({
-              icon: 'success',
-              title: 'Éxito',
-              text: 'Usuario creado exitosamente',
-              confirmButtonColor: '#28a745'
-            });
+          next: (createdUser) => {
+            if (file) {
+              const formData = new FormData();
+              formData.append('file', file);
+
+              this.userService.uploadImage(createdUser.users_id!, formData).subscribe({
+                next: () => this.finalizarCreacion(),
+                error: () => this.mostrarErrorImagen()
+              });
+            } else {
+              this.finalizarCreacion();
+            }
           },
-          error: () => {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Ocurrió un error al crear el usuario',
-              confirmButtonColor: '#dc3545'
-            });
-          }
+          error: () => this.mostrarErrorCreacion()
         });
       }
     });
   }
 
-  updateUser(user: Users) {
+  private finalizarCreacion() {
+    this.loadUsers();
+    this.closeUserForm();
+    Swal.fire({
+      icon: 'success',
+      title: 'Éxito',
+      text: 'Usuario creado exitosamente',
+      confirmButtonColor: '#28a745'
+    });
+  }
+
+  private mostrarErrorCreacion() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Ocurrió un error al crear el usuario',
+      confirmButtonColor: '#dc3545'
+    });
+  }
+
+  private mostrarErrorImagen() {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Imagen no cargada',
+      text: 'El usuario fue creado, pero no se pudo subir la imagen.',
+      confirmButtonColor: '#f39c12'
+    });
+  }
+
+
+
+
+  updateUser(payload: UserFormPayload) {
+    const { user, file } = payload;
+
     Swal.fire({
       title: 'Actualizar usuario',
       text: '¿Deseas actualizar este usuario?',
@@ -102,27 +151,45 @@ export class UsersListComponent implements OnInit {
       if (result.isConfirmed) {
         this.userService.update(user).subscribe({
           next: () => {
-            this.loadUsers();
-            this.closeUserForm();
-            Swal.fire({
-              icon: 'success',
-              title: 'Éxito',
-              text: 'Usuario actualizado exitosamente',
-              confirmButtonColor: '#28a745'
-            });
+            if (file) {
+              const formData = new FormData();
+              formData.append('file', file);
+
+              this.userService.uploadImage(user.users_id!, formData).subscribe({
+                next: () => this.finalizarActualizacion(),
+                error: () => this.mostrarErrorImagen()
+              });
+            } else {
+              this.finalizarActualizacion();
+            }
           },
-          error: () => {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Ocurrió un error al actualizar el usuario',
-              confirmButtonColor: '#dc3545'
-            });
-          }
+          error: () => this.mostrarErrorActualizacion()
         });
       }
     });
   }
+
+  private finalizarActualizacion() {
+    this.loadUsers();
+    this.closeUserForm();
+    Swal.fire({
+      icon: 'success',
+      title: 'Éxito',
+      text: 'Usuario actualizado correctamente',
+      confirmButtonColor: '#28a745'
+    });
+  }
+
+  private mostrarErrorActualizacion() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Ocurrió un error al actualizar el usuario',
+      confirmButtonColor: '#dc3545'
+    });
+  }
+
+
 
 
 
@@ -218,6 +285,12 @@ export class UsersListComponent implements OnInit {
       return matchesTerm && matchesRole && matchesState;
     });
   }
+
+ getFullImageUrl(imagePath: string): string {
+  return `${environment.urlBackEnd}${imagePath}`;
+}
+
+
 
 
 

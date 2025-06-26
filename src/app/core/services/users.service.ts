@@ -44,5 +44,15 @@ export class UsersService {
     return this.http.put<void>(`${this.urlBackEnd}/restore/${usersId}`, {});
   }
 
+  // Nuevo metodo en el service
+  uploadImage(usersId: number, formData: FormData): Observable<string> {
+  return this.http.post(`${this.urlBackEnd}/upload-image/${usersId}`, formData, {
+    responseType: 'text'
+  });
+}
+
+
+
+
 
 }

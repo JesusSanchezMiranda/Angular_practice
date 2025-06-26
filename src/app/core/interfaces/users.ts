@@ -9,7 +9,8 @@ export interface Users {
      role: string;
      registration_date: string;
      state: string;
-
+     // nuevo campo en la interface
+     imagePath?: string;
 }
 
 

@@ -2,7 +2,8 @@
   <div class="modal">
     <div class="modal-header">
       <h2>{{ formUser.users_id ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
-      <p>{{ formUser.users_id ? 'Modifica los datos del usuario' : 'Completa el formulario para crear un nuevo usuario' }}</p>
+      <p>{{ formUser.users_id ? 'Modifica los datos del usuario' : 'Completa el formulario para crear un nuevo usuario'
+        }}</p>
       <button class="close-button" aria-label="Cerrar" (click)="onCancel()">×</button>
     </div>
 
@@ -14,7 +15,8 @@
 
       <div class="form-group">
         <label>Apellido</label>
-        <input type="text" class="input" placeholder="Ingrese el apellido" [(ngModel)]="formUser.last_name" name="last_name" />
+        <input type="text" class="input" placeholder="Ingrese el apellido" [(ngModel)]="formUser.last_name"
+          name="last_name" />
       </div>
 
       <div class="form-group">
@@ -27,12 +29,14 @@
 
       <div class="form-group">
         <label>Número de Documento</label>
-        <input type="text" class="input" placeholder="Ingrese el número" [(ngModel)]="formUser.document_number" name="document_number" />
+        <input type="text" class="input" placeholder="Ingrese el número" [(ngModel)]="formUser.document_number"
+          name="document_number" />
       </div>
 
       <div class="form-group">
         <label>Teléfono</label>
-        <input type="text" class="input" placeholder="Ingrese el teléfono" [(ngModel)]="formUser.cellphone" name="cellphone" />
+        <input type="text" class="input" placeholder="Ingrese el teléfono" [(ngModel)]="formUser.cellphone"
+          name="cellphone" />
       </div>
 
       <div class="form-group">
@@ -50,6 +54,23 @@
           <option value="Cliente">Cliente</option>
         </select>
       </div>
+
+      <!--Campo para ingresar la imagen desde el form-->
+      <div class="form-group">
+        <label for="fileInput" class="form-label">Foto de perfil</label>
+
+        <div class="image-upload-container">
+          <label class="custom-file-upload">
+            <input type="file" id="fileInput" (change)="onFileSelected($event)" />
+            Seleccionar imagen
+          </label>
+
+          <div *ngIf="previewUrl" class="preview-container">
+            <img [src]="previewUrl" alt="Vista previa" />
+          </div>
+        </div>
+      </div>
+
 
     </form>
 
